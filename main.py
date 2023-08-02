@@ -1,0 +1,102 @@
+import requests
+
+
+def get_weather_data():
+    url = 'https://samples.openweathermap.org/data/2.5/forecast/hourly?q=London,' \
+          'us&appid=b6907d289e10d714a6e88b30761fae22 '
+    response = requests.get(url)
+    if response.status_code == 200:
+        return response.json()
+    else:
+        print(f"Failed to fetch data. Status code: {response.status_code}")
+        return None
+
+
+def get_weather_by_date(data, target_date):
+    target_date = "2019-03-27"
+
+    for item in data["list"]:
+        dt_txt = item["dt_txt"]
+        if dt_txt.startswith(target_date):
+            temp = item["main"]["temp"]
+            weather_description = item["weather"][0]["description"]
+
+            print("Date and Time:", dt_txt)
+            print("Temperature:", temp)
+            print("Weather Description:", weather_description)
+            print("-" * 30)
+
+
+def get_wind_speed_by_date(data, target_date):
+    target_date = "2019-03-28"
+
+    for item in data["list"]:
+        dt_txt = item["dt_txt"]
+        if dt_txt.startswith(target_date):
+            wind_speed = item["wind"]["speed"]
+            weather_description = item["weather"][0]["description"]
+
+            print("Date and Time:", dt_txt)
+            print("Wind_speed:", wind_speed)
+            print("Weather Description:", weather_description)
+            print("-" * 30)
+
+
+def get_pressure_by_date(data, target_date):
+    target_date = "2019-03-29"
+
+    for item in data["list"]:
+        dt_txt = item["dt_txt"]
+        if dt_txt.startswith(target_date):
+            pressure = item["main"]["pressure"]
+            weather_description = item["weather"][0]["description"]
+
+            print("Date and Time:", dt_txt)
+            print("Pressure:", pressure)
+            print("Weather Description:", weather_description)
+            print("-" * 30)
+
+
+def main(temp=None, wind_speed=None, pressure=None):
+    data = get_weather_data()
+    if data is None:
+        return
+
+    while True:
+        print("Menu:")
+        print("1. Get weather")
+        print("2. Get Wind Speed")
+        print("3. Get Pressure")
+        print("0. Exit")
+
+        choice = input("Enter your choice: ")
+
+        if choice == '1':
+            date = input("Enter the date  ('YYYY-MM-DD HH:MM:SS') : ")
+            get_weather_by_date(data, date)
+            if temp is not None:
+                print(f"Temperature on {date}: {temp} K")
+            else:
+                print("Data not found for the provided date.")
+        elif choice == '2':
+            date = input("Enter the date ('YYYY-MM-DD HH:MM:SS') : ")
+            get_wind_speed_by_date(data, date)
+            if wind_speed is not None:
+                print("Wind Speed:", wind_speed)
+            else:
+                print("Data not found for the provided date.")
+        elif choice == '3':
+            date = input("Enter the date ('YYYY-MM-DD HH:MM:SS') : ")
+            get_pressure_by_date(data, date)
+            if pressure is not None:
+                print(f"Pressure on {date}: {pressure} hPa")
+            else:
+                print("Data not found for the provided date.")
+        elif choice == '0':
+            break
+        else:
+            print("Invalid choice. Please try again.")
+
+
+if __name__ == "__main__":
+    main()
